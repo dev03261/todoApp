@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+    <div class="container">
+      <a class="navbar-brand" href="/">Todo App</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav ml-auto">
+          <!-- <a class="nav-link" href="/login">Login</a> -->
+          <!-- <a class="nav-link" href="/SignUp">Sign Up</a> -->
+          <a class="nav-link" href="/logout">Log Out</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="container">
+  {% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-warning alert-dismissible fade show" style="margin-top:2vw;" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endfor %}
+  {% endif %}
+</div>
+
+</div>
+
+    <div class="container mt-4">
+      <div class="row">
+        <div class="col-lg-10 mx-auto">
+          <div class="alert alert-info text-center">
+            <h3>Enter your to-dos</h3>
+          </div>
+          <div class="col-lg-6 mx-auto p-2">
+            <form action="/add-todo/" method="POST">
+              {%csrf_token%}
+              {{form.as_p}}
+              <hr>
+              <input type="submit" value="Add" class="btn btn-info">
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-lg-10 mx-auto">
+          <div class="border">
+            <div class="alert alert-info text-center">
+              <h3>Task Tracker</h3>
+            </div>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Title</th>
+                  <th>Status</th>
+                  <th>Priority</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for todo in todos %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ todo.title }}</td>
+                  <td>{{ todo.status }}</td>
+                  <td>{{ todo.priority }}</td>
+                  <td>
+                    <a href="/delete-todo/{{ todo.id }}" class="btn btn-outline-danger">Delete</a>
+                    {% if todo.status == 'P' %}
+                      <a href="/mark-as-done/{{ todo.id }}" class="btn btn-outline-success">Mark Done</a>
+                    {% else %}
+                      <a href="/mark-as-pending/{{ todo.id }}" class="btn btn-outline-warning">Mark Pending</a>
+                    {% endif %}
+                    <a href="{% url 'edit-details' id=todo.id status=todo.status %}" class="btn btn-outline-primary">Edit</a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  </body>
+</html>
